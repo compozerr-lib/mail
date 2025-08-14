@@ -9,6 +9,6 @@ public class MailFeature : IFeature
 
     void IFeature.ConfigureServices(IServiceCollection services)
     {
-        services.AddSingleton<IMailService, MailService>();
+        services.AddTransient<IMailService, MailService>();
     }
 }
