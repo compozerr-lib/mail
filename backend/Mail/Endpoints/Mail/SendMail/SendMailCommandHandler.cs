@@ -1,6 +1,5 @@
 using Core.MediatR;
 using Mail.Services;
-using MediatR;
 
 namespace Mail.Endpoints.Mail.SendMail;
 
@@ -10,7 +9,9 @@ public sealed class SendMailCommandHandler(
 	public Task Handle(SendMailCommand command, CancellationToken cancellationToken = default)
 	{
 		var email = new Email(
-			   command.From,
+			   new EmailAddress(
+			       command.From,
+			       command.DisplayName),
 			   [command.To],
 			   command.Subject,
 			   command.HtmlBody);
