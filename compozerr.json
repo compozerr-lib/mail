@@ -2,11 +2,6 @@
     "type": "module",
     "name": "mail",
     "dependencies": { },
-    "start": "echo 'Hi Mom!'",
-    "startupTimeoutMs": 1000,
-    "readyMessage": "Hi Mom",
-    "end": "",
-    "port": "",
     "frontend":{
         "routesDir": "frontend/src/routes"
     }
