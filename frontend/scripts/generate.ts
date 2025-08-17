@@ -1,0 +1,55 @@
+import path from "path";
+import fs from "fs";
+import { exec } from "child_process";
+import { promisify } from "util";
+
+const execAsync = promisify(exec);
+
+const root = path.resolve(__dirname, '../../../..');
+
+const inputArgs = {
+    frontendExportFolder: path.join(root, process.argv[2] || "frontend/src/email-templates"),
+    backendExportFolder: path.join(root, process.argv[3] || "backend/Api/Emails"),
+};
+
+async function copyFolderAsync(source: string, destination: string) {
+    if (!fs.existsSync(destination)) {
+        await fs.promises.mkdir(destination, { recursive: true });
+    }
+    const files = await fs.promises.readdir(source);
+    for (const file of files) {
+        const srcFile = path.join(source, file);
+        const destFile = path.join(destination, file);
+        if ((await fs.promises.stat(srcFile)).isDirectory()) {
+            await copyFolderAsync(srcFile, destFile);
+        } else {
+            await fs.promises.copyFile(srcFile, destFile);
+        }
+    }
+}
+
+async function createBackendExportFolderExistsAsync() {
+    if (!fs.existsSync(inputArgs.backendExportFolder)) {
+        await fs.promises.mkdir(inputArgs.backendExportFolder, { recursive: true });
+        console.error(`Backend export folder did not exist and was created: ${inputArgs.backendExportFolder}`);
+    }
+}
+
+async function createFrontendExportFolderExistsAsync() {
+    if (!fs.existsSync(inputArgs.frontendExportFolder)) {
+        await fs.promises.mkdir(inputArgs.frontendExportFolder, { recursive: true });
+
+        // await execAsync(`npx email export --dir ./src/emails --outDir ${inputArgs.frontendExportFolder} --pretty`);
+        await copyFolderAsync(
+            path.join(__dirname, '../src/emails'),
+            inputArgs.frontendExportFolder
+        );
+    }
+
+    await execAsync(`npx email export --dir ${inputArgs.frontendExportFolder} --outDir ${inputArgs.backendExportFolder} --pretty`);
+}
+
+(async function main() {
+    await createBackendExportFolderExistsAsync();
+    await createFrontendExportFolderExistsAsync();
+})();

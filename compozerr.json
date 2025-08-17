@@ -1,6 +1,8 @@
 {
     "type": "module",
     "name": "mail",
+    "start": "npm run generate && npm run dev",
+    "readyMessage": "Ready in ",
     "dependencies": { },
     "frontend":{
         "routesDir": "frontend/src/routes"
