@@ -50,12 +50,38 @@ async function createFrontendExportFolderExistsAsync() {
 }
 
 function convertToPascalCase(str: string): string {
-    return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, (match, index) => {
+    return str.replace(/(?:^\w|[A-Z]|\b\w|\s+|-)/g, (match, index) => {
+        if (+/\s|-/.test(match)) {
+            return '';
+        }
         if (index === 0) {
             return match.toUpperCase();
         }
-        return match.toUpperCase().replace(/\s+/g, '');
+        return match.toUpperCase();
     });
+}
+
+
+function createCSharpTemplate(filePath: string, fieldNames: string[]) {
+    const getRequiredStringLine = (fieldName: string) => {
+        return `    public required string ${fieldName} { get; init; }
+        `;
+    }
+
+    return `using Mail;
+
+namespace Api.Emails;
+
+public sealed class ${convertToPascalCase(filePath)}Template : ReactEmailTemplate
+{
+    public ${convertToPascalCase(filePath)}Template() : base("Emails/${filePath}.html") { }
+
+${fieldNames.map(getRequiredStringLine).join('')}
+}`;
+};
+
+async function saveFileAsync(filePath: string, content: string) {
+    await fs.promises.writeFile(filePath, content, 'utf-8');
 }
 
 async function generateBackendDtosAsync() {
@@ -96,7 +122,10 @@ async function generateBackendDtosAsync() {
         fileMap.push({ fileName, replacements });
     }
 
-    console.log(JSON.stringify(fileMap, null, 2));
+    await Promise.all(fileMap.map(async ({ fileName, replacements }) => {
+        const cSharpTemplate = createCSharpTemplate(fileName, Object.values(replacements).map(r => r.fieldName));
+        await saveFileAsync(path.join(inputArgs.backendExportFolder, `${convertToPascalCase(fileName)}.cs`), cSharpTemplate);
+    }));
 }
 
 (async function main() {
