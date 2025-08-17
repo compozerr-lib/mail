@@ -10,8 +10,8 @@ public sealed class SendMailCommandHandler(
 	{
 		var email = new Email(
 			   new EmailAddress(
-			       command.From,
-			       command.DisplayName),
+				   command.From,
+				   command.DisplayName),
 			   [command.To],
 			   command.Subject,
 			   command.HtmlBody);
