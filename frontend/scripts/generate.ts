@@ -49,7 +49,50 @@ async function createFrontendExportFolderExistsAsync() {
     await execAsync(`npx email export --dir ${inputArgs.frontendExportFolder} --outDir ${inputArgs.backendExportFolder} --pretty`);
 }
 
+async function generateBackendDtosAsync() {
+    const htmlFiles = (await fs.promises.readdir(inputArgs.backendExportFolder)).filter(file => file.endsWith('.html'));
+
+    const fileMap: {
+        fileName: string;
+        replacements: {
+            [key: string]: {
+                replacementKey: string;
+                fieldName: string;
+            }
+        };
+    }[] = [];
+
+    for (const file of htmlFiles) {
+        const filePath = path.join(inputArgs.backendExportFolder, file);
+        const content = await fs.promises.readFile(filePath, 'utf-8');
+        const fileName = path.basename(file, '.html');
+        const replacements: {
+            [key: string]: {
+                replacementKey: string;
+                fieldName: string;
+            }
+        } = {};
+        const regex = /% (\w+) %/g;
+
+        let match;
+
+        while ((match = regex.exec(content)) !== null) {
+            const key = match[1] as string;
+            replacements[key] = {
+                replacementKey: `% ${key} %`,
+                fieldName: key
+            };
+        }
+
+        fileMap.push({ fileName, replacements });
+    }
+
+    console.log(JSON.stringify(fileMap, null, 2));
+}
+
 (async function main() {
     await createBackendExportFolderExistsAsync();
     await createFrontendExportFolderExistsAsync();
+
+    await generateBackendDtosAsync();
 })();
