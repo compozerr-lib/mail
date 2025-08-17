@@ -65,7 +65,7 @@ function convertToPascalCase(str: string): string {
 function createCSharpTemplate(filePath: string, fieldNames: string[]) {
     const getRequiredStringLine = (fieldName: string) => {
         return `    public required string ${fieldName} { get; init; }
-        `;
+`;
     }
 
     return `using Mail;
