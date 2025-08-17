@@ -49,6 +49,15 @@ async function createFrontendExportFolderExistsAsync() {
     await execAsync(`npx email export --dir ${inputArgs.frontendExportFolder} --outDir ${inputArgs.backendExportFolder} --pretty`);
 }
 
+function convertToPascalCase(str: string): string {
+    return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, (match, index) => {
+        if (index === 0) {
+            return match.toUpperCase();
+        }
+        return match.toUpperCase().replace(/\s+/g, '');
+    });
+}
+
 async function generateBackendDtosAsync() {
     const htmlFiles = (await fs.promises.readdir(inputArgs.backendExportFolder)).filter(file => file.endsWith('.html'));
 
@@ -80,7 +89,7 @@ async function generateBackendDtosAsync() {
             const key = match[1] as string;
             replacements[key] = {
                 replacementKey: `% ${key} %`,
-                fieldName: key
+                fieldName: convertToPascalCase(key),
             };
         }
 
