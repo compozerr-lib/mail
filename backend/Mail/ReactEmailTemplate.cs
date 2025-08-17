@@ -14,7 +14,10 @@ public abstract class ReactEmailTemplate(string htmlFilePath)
             .ForEach(prop =>
             {
                 var value = prop.GetValue(this)?.ToString() ?? string.Empty;
-                htmlContent = htmlContent.Replace($"% {prop.Name} %", value);
+                htmlContent = htmlContent.Replace(
+                    $"% {prop.Name} %",
+                    value,
+                    StringComparison.InvariantCultureIgnoreCase);
             });
 
         return htmlContent;
