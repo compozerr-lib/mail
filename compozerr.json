@@ -3,7 +3,7 @@
     "name": "mail",
     "start": "cd frontend && npm run generate && npm run dev 2>/dev/null",
     "readyMessage": "Running preview at",
-    "startupTimeoutMs": 10000,
+    "startupTimeoutMs": 15000,
     "port": "1239",
-    "dependencies": { }
+    "dependencies": {}
 }
