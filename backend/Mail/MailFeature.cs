@@ -15,7 +15,7 @@ public class MailFeature : IFeature
         {
             var hostEnvironment = s.GetRequiredService<IHostEnvironment>();
 
-            if (hostEnvironment?.IsDevelopment() ?? true)
+            if (hostEnvironment.IsDevelopment())
             {
                 return new MockMailService();
             }

@@ -1,6 +1,5 @@
 using Mail.Events;
 using MediatR;
-using Microsoft.Extensions.Hosting;
 
 namespace Mail.Services;
 

@@ -1,5 +1,3 @@
-using Mail.Events;
-using MediatR;
 using Serilog;
 
 namespace Mail.Services;
