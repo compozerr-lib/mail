@@ -1,14 +1,11 @@
 using Mail.Events;
 using MediatR;
+using Microsoft.Extensions.Hosting;
 
 namespace Mail.Services;
 
-public interface IMailService
-{
-    Task SendEmailAsync(Email email);
-}
-
-public class MailService(IPublisher publisher) : IMailService
+public class MailService(
+    IPublisher publisher) : IMailService
 {
     public Task SendEmailAsync(Email email)
         => publisher.Publish(
