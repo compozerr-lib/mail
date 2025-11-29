@@ -107,7 +107,7 @@ async function generateBackendDtosAsync() {
                 fieldName: string;
             }
         } = {};
-        const regex = /% (\w+) %/g;
+        const regex = /%\s*(\w+)\s*%/g;
 
         let match;
 

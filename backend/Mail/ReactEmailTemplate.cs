@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace Mail;
 
 public abstract class ReactEmailTemplate(string htmlFilePath)
@@ -14,10 +16,11 @@ public abstract class ReactEmailTemplate(string htmlFilePath)
             .ForEach(prop =>
             {
                 var value = prop.GetValue(this)?.ToString() ?? string.Empty;
-                htmlContent = htmlContent.Replace(
-                    $"% {prop.Name} %",
+                htmlContent = Regex.Replace(
+                    htmlContent,
+                    $"%\\s*{prop.Name}\\s*%",
                     value,
-                    StringComparison.InvariantCultureIgnoreCase);
+                    RegexOptions.IgnoreCase);
             });
 
         return htmlContent;
