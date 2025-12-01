@@ -16,4 +16,10 @@
     <ProjectReference Include="../../../../backend/Core/Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="**/Emails/**/*.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
