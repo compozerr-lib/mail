@@ -17,8 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="**/Emails/**/*.html">
+    <None Include="../../../../backend/Api/Emails/**/*.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>Emails/%(RecursiveDir)%(FileName)%(Extension)</Link>
     </None>
   </ItemGroup>
 
