@@ -23,6 +23,19 @@ public abstract class ReactEmailTemplate(string htmlFilePath)
                     RegexOptions.IgnoreCase);
             });
 
+        await ValidateEverythingIsReplacedOrThrow(htmlContent);
+
         return htmlContent;
+    }
+
+    private static async Task ValidateEverythingIsReplacedOrThrow(string htmlContent)
+    {
+        var unmatchedPlaceholders = Regex.Matches(htmlContent, "%\\s*\\w+\\s*%")
+                                         .Select(m => m.Value)
+                                         .Distinct()
+                                         .ToList();
+
+        if (unmatchedPlaceholders.Count > 0)
+            throw new InvalidOperationException($"Unmatched placeholder found in template: {unmatchedPlaceholders.Aggregate((a, b) => a + ", " + b)}");
     }
 }
