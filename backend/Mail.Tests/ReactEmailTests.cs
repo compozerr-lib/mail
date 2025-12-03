@@ -35,6 +35,27 @@ public class ReactEmailTests
 
         exception.Message.Should().Contain("Unmatched placeholder found in template:");
     }
+
+    [Fact]
+    public async Task CreateAsync_ReplacesEventhoughItHasNewLine()
+    {
+        var mail = await ReactEmail.CreateAsync(
+            new EmailAddress("hosting-noreply@notifications.compozerr.com", "compozerr hosting"),
+            [new EmailAddress("email@example.com", "User Name")],
+            "Bla bla",
+            new OnboardingInvoicePaymentTemplate()
+            {
+                CustomerName = "User Name",
+                DaysUntilTermination = "5",
+                DashboardUrl = frontendLocation.Object.GetFromPath("/projects").ToString(),
+                AddPaymentMethodUrl = frontendLocation.Object.GetFromPath("/add-payment-method").ToString(),
+                ContactLink = frontendLocation.Object.GetFromPath("/contact").ToString(),
+                CompanyAddress = "Whatever"
+            });
+
+        mail.Should().NotBeNull();
+        mail.HtmlBody.Should().NotMatchRegex("%\\s*\\w+\\s*%");
+    }
 }
 
 public sealed class MissingPaymentMethodTemplate : ReactEmailTemplate
@@ -45,6 +66,19 @@ public sealed class MissingPaymentMethodTemplate : ReactEmailTemplate
     public required string CustomerName { get; init; }
     public required string Description { get; init; }
     public required string DashboardLink { get; init; }
+    public required string ContactLink { get; init; }
+    public required string CompanyAddress { get; init; }
+
+}
+
+public sealed class OnboardingInvoicePaymentTemplate : ReactEmailTemplate
+{
+    public OnboardingInvoicePaymentTemplate() : base("Emails/onboarding-invoice-payment-mock.html") { }
+
+    public required string CustomerName { get; init; }
+    public required string DaysUntilTermination { get; init; }
+    public required string AddPaymentMethodUrl { get; init; }
+    public required string DashboardUrl { get; init; }
     public required string ContactLink { get; init; }
     public required string CompanyAddress { get; init; }
 
